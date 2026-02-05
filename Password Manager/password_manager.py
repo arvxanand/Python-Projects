@@ -1,9 +1,15 @@
+from json import load
 import hashlib
 import getpass
 
 PASSWORD_FILE = "password.txt"
 
 credentials = []
+
+def save_credential(cred):
+    line = f"{cred["site"]}:{cred["username"]}:{cred["password"]}\n"
+    with open(PASSWORD_FILE, "a") as file:
+        file.write(line)
 
 def add_credential(): #Gets the site, username, and password. It then takes those inputs and stores them in a dictionary and adds them to our credentials dictionary so that we can use them later on
     site = input("What is the name of your site you wish to save to the password manager?: ").strip() 
@@ -20,8 +26,8 @@ def add_credential(): #Gets the site, username, and password. It then takes thos
     credentials.append(login_details)
     save_credential(login_details)
 
-add_credential()
-print(credentials)
+#add_credential()
+#print(credentials)
 
 def view_credentials(): #Function to let the user see the credentials. If there are none, then print basic response. If there are, it starts at 1 and prints the site and username. 
     if credentials == []:
@@ -68,4 +74,28 @@ actions = {
 }
 
 def main():
+    load_credentials()
 
+    while True:
+        print(
+            "== Password Manager ==\n"
+            "1. Add credentials\n"
+            "2. View alll\n"
+            "3. Search by site\n"
+            "4. Quit")
+        user_input = input("Choose: ")
+
+        if user_input == "4":
+            quit_program()
+            break
+
+        action = actions.get(user_input)
+
+        if action is None:
+            print("Invalid option. Please try again")
+        else:
+            action()
+            print()
+        
+if __name__ == "__main__":
+    main()

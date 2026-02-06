@@ -1,4 +1,3 @@
-from json import load
 import hashlib
 import getpass
 

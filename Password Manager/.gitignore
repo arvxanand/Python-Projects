@@ -1,6 +1,5 @@
 # secrets
 Password Manager/password.txt
-Password Manager/master_hash.txt
 
 # python cache
 __pycache__/

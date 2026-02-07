@@ -1,9 +1,39 @@
 import hashlib
 import getpass
+import sys
 
 PASSWORD_FILE = "password.txt"
+MASTER_PASSWORD_FILE = "master_hash.txt"
 
 credentials = []
+
+
+def create_master_password():
+    with open(MASTER_PASSWORD_FILE, 'r') as file:
+        content = file.read()
+        if content == "":
+            create_master_input = getpass.getpass("Create Master Password: ", echo_char="*")
+            hashed = hashlib.sha256(create_master_input.encode()).hexdigest()
+            with open(MASTER_PASSWORD_FILE, "w") as file:
+                file.write(hashed)
+        else:
+            return
+
+def master_password():
+    master_input = getpass.getpass("Master Password: ", echo_char="*")
+    user_hash = hashlib.sha256(master_input.encode()).hexdigest()
+    
+    with open(MASTER_PASSWORD_FILE, 'r') as file:
+        stored_hash = file.read().strip()
+        if user_hash == stored_hash:
+            print("Access Granted!")
+            print()
+            return True
+        else:
+            print("Access not granted...")
+            quit_program()
+            sys.exit()
+            
 
 def save_credential(cred):
     line = f"{cred["site"]}:{cred["username"]}:{cred["password"]}\n"
@@ -15,7 +45,7 @@ def add_credential(): #Gets the site, username, and password. It then takes thos
     #The .strip() removes any unwanted spaces so that in function view credentials it can read whether the user inputed values or not and 
     # if there are no values then the function prints No credentials added
     username = input("What is your saved username on that site?: ").strip()
-    password = input("What is your saved password on that site?: ").strip() 
+    password = getpass.getpass("What is your saved password on that site?: ", echo_char="*").strip() 
 
     if site == "":
         print("Site name required. Info not saved.")
@@ -75,13 +105,16 @@ actions = {
 def main():
     load_credentials()
 
+    create_master_password()
+    master_password()
+
     while True:
         print(
             "== Password Manager ==\n"
             "1. Add credentials\n"
             "2. View alll\n"
             "3. Search by site\n"
-            "4. Quit")
+            "4. Quit\n")
         user_input = input("Choose: ")
 
         if user_input == "4":

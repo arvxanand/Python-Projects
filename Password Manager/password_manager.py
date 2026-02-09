@@ -91,6 +91,19 @@ def load_credentials():
     except FileNotFoundError:
         pass
 
+def delete_credentials():
+    search = input("Enter the site name to search: ")
+    print("Checking if site is in mananger...")
+    with open(PASSWORD_FILE, "r") as file:
+        lines = file.readlines()
+    kept_lines = []
+    for line in lines:
+        cleaned = line.strip()
+        splitted = cleaned.split(":")
+        if splitted[0].strip().lower() != search.strip().lower():
+            kept_lines.append(line)
+    with open(PASSWORD_FILE, "w") as file:
+        file.writelines(kept_lines)
 
 def quit_program():
     print("Goodbye!")
@@ -99,7 +112,8 @@ actions = {
     "1": add_credential,
     "2": view_credentials,
     "3": search_credentials,
-    "4": quit_program,
+    "4": delete_credentials,
+    "5": quit_program,
 }
 
 def main():
@@ -114,10 +128,11 @@ def main():
             "1. Add credentials\n"
             "2. View alll\n"
             "3. Search by site\n"
-            "4. Quit\n")
+            "4. Delete Credentials\n"
+            "5. Quit\n")
         user_input = input("Choose: ")
 
-        if user_input == "4":
+        if user_input == "5":
             quit_program()
             break
 

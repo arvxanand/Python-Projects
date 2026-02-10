@@ -1,6 +1,7 @@
 import hashlib
 import getpass
 import sys
+from time import sleep
 
 PASSWORD_FILE = "password.txt"
 MASTER_PASSWORD_FILE = "master_hash.txt"
@@ -26,6 +27,7 @@ def master_password():
     with open(MASTER_PASSWORD_FILE, 'r') as file:
         stored_hash = file.read().strip()
         if user_hash == stored_hash:
+            loading_animation()
             print("Access Granted!")
             print()
             return True
@@ -94,6 +96,7 @@ def load_credentials():
 def delete_credentials():
     search = input("Enter the site name to search: ")
     print("Checking if site is in mananger...")
+    loading_animation()
     with open(PASSWORD_FILE, "r") as file:
         lines = file.readlines()
     kept_lines = []
@@ -104,6 +107,18 @@ def delete_credentials():
             kept_lines.append(line)
     with open(PASSWORD_FILE, "w") as file:
         file.writelines(kept_lines)
+    print(f"{search.strip().lower().capitalize()} has been deleted.")
+
+def loading_animation():
+    for x in range(1,11):
+        for i in ("⠻", "⠽", "⠾", "⠷", "⠯", "⠟"):
+            sleep(0.1)
+            if x == 10:
+                print('(Done)        ' , end='\r')
+                print()
+                break
+            else:
+                print('Loading ' +i, end = '\r')
 
 def quit_program():
     print("Goodbye!")

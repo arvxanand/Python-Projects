@@ -2,6 +2,8 @@ import hashlib
 import getpass
 import sys
 from time import sleep
+import secrets
+import string
 
 PASSWORD_FILE = "password.txt"
 MASTER_PASSWORD_FILE = "master_hash.txt"
@@ -47,7 +49,19 @@ def add_credential(): #Gets the site, username, and password. It then takes thos
     #The .strip() removes any unwanted spaces so that in function view credentials it can read whether the user inputed values or not and 
     # if there are no values then the function prints No credentials added
     username = input("What is your saved username on that site?: ").strip()
-    password = getpass.getpass("What is your saved password on that site?: ", echo_char="*").strip() 
+    gen_or_create_pass = input("Would you like to create your own password or have one be generated for you? (Generated/Own): ").lower().strip()
+    while True:
+        if gen_or_create_pass == "generated":
+            password = generate_password()
+            print()
+            print("Generated Password succesfully created!")
+            break
+        elif gen_or_create_pass == "own":
+            password = getpass.getpass("What would you like your password to be for the site?: ", echo_char="*").strip() 
+            break
+        else:
+            print("Answer not understood.")
+            continue
 
     if site == "":
         print("Site name required. Info not saved.")
@@ -119,6 +133,18 @@ def loading_animation():
                 break
             else:
                 print('Loading ' +i, end = '\r')
+
+def generate_password():
+    user_choice = input("How long do you want your password to be?: ")
+    pass_length = int(user_choice)
+    alphabet = string.ascii_letters + string.digits
+    password = "".join(secrets.choice(alphabet) for _ in range(pass_length))
+    if user_choice == "":
+        pass_length = 16
+        return password(pass_length)
+    else:
+        return password
+
 
 def quit_program():
     print("Goodbye!")

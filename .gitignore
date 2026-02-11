@@ -1,9 +1,0 @@
-# secrets
-Password Manager/password.txt
-
-# python cache
-__pycache__/
-*.pyc
-
-# mac junk
-.DS_Store

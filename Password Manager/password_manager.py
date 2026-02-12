@@ -44,6 +44,15 @@ def save_credential(cred):
     with open(PASSWORD_FILE, "a") as file:
         file.write(line)
 
+def check_password_strength(password):
+    has_lower = any(c.islower() for c in password)
+    has_upper = any(c.isupper() for c in password)
+    has_digit = any(c.isdigit() for c in password)
+    has_symbol = any(c in string.punctuation for c in password)
+
+    score = sum([has_lower, has_upper, has_digit, has_symbol])
+    return score
+
 def add_credential(): #Gets the site, username, and password. It then takes those inputs and stores them in a dictionary and adds them to our credentials dictionary so that we can use them later on
     site = input("What is the name of your site you wish to save to the password manager?: ").strip() 
     #The .strip() removes any unwanted spaces so that in function view credentials it can read whether the user inputed values or not and 
@@ -57,11 +66,29 @@ def add_credential(): #Gets the site, username, and password. It then takes thos
             print("Generated Password succesfully created!")
             break
         elif gen_or_create_pass == "own":
-            password = getpass.getpass("What would you like your password to be for the site?: ", echo_char="*").strip() 
+            while True:
+                password = getpass.getpass("What would you like your password to be for the site?: ", echo_char="*").strip()
+                if len(password) < 8:
+                    print("Password too short (min 8 characters)")
+                    continue
+
+                strength = (check_password_strength(password))
+
+                if strength >= 3:
+                    print("Password Strength: Strong")
+                    print("Credentials added")
+                    print()
+                    break
+                else:
+                    print("Password Strength: Weak")
+                    use_anyway = input("Use anyway? (y/n): ").strip().lower()
+                    if use_anyway == "y":
+                        break
             break
         else:
             print("Answer not understood.")
             continue
+        break
 
     if site == "":
         print("Site name required. Info not saved.")
@@ -171,7 +198,7 @@ def main():
             "3. Search by site\n"
             "4. Delete Credentials\n"
             "5. Quit\n")
-        user_input = input("Choose: ")
+        user_input = input("Choose: ").strip().lower()
 
         if user_input == "5":
             quit_program()

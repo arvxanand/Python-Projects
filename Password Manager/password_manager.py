@@ -162,15 +162,16 @@ def loading_animation():
                 print('Loading ' +i, end = '\r')
 
 def generate_password():
-    user_choice = input("How long do you want your password to be?: ")
-    pass_length = int(user_choice)
-    alphabet = string.ascii_letters + string.digits
-    password = "".join(secrets.choice(alphabet) for _ in range(pass_length))
+    user_choice = input("How long do you want your password to be?: ").strip()
+
     if user_choice == "":
         pass_length = 16
-        return password(pass_length)
     else:
-        return password
+        pass_length = int(user_choice)
+
+    alphabet = string.ascii_letters + string.digits
+    password = "".join(secrets.choice(alphabet) for _ in range(pass_length))
+    return password
 
 
 def quit_program():
